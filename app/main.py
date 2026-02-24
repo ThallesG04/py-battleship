@@ -19,6 +19,7 @@ class Deck:
     def coord(self) -> Coord:
         return (self.row, self.column)
 
+
 class Ship:
     def __init__(self,
                  start: Coord,
@@ -31,22 +32,31 @@ class Ship:
         self.decks = self._create_decks()
 
     def _create_decks(self) -> List[Deck]:
-        (r1, c1), (r2, c2) = self.start, self.end
+        (start_row, start_column), (
+            end_row,
+            end_column,
+        ) = self.start, self.end
 
-        if r1 != r2 and c1 != c2:
+        if start_row != end_row and start_column != end_column:
             raise ValueError("Ship must be horizontal or vertical.")
 
-        r_start, r_end = sorted((r1, r2))
-        c_start, c_end = sorted((c1, c2))
+        row_start, row_end = sorted((start_row, end_row))
+        column_start, column_end = sorted(
+            (start_column, end_column)
+        )
 
-        decks = []
-        if r_start == r_end:
-            for c in range(c_start, c_end + 1):
-                decks.append(Deck(r_start, c))
+        decks: List[Deck] = []
 
+        if row_start == row_end:
+            for column_index in range(
+                    column_start, column_end + 1
+            ):
+                decks.append(Deck(row_start, column_index))
         else:
-            for r in range(r_start, r_end + 1):
-                decks.append(Deck(r, c_start))
+            for row_index in range(
+                    row_start, row_end + 1
+            ):
+                decks.append(Deck(row_index, column_start))
 
         return decks
 
@@ -85,8 +95,8 @@ class Battleship:
                 self.field[deck.coord] = ship
 
     def _validade_coord(self, coord: Coord) -> None:
-        r, c = coord
-        if not (0 <= r < self.SIZE and 0 <= c < self.SIZE):
+        row, column = coord
+        if not (0 <= row < self.SIZE and 0 <= column < self.SIZE):
             raise ValueError(f"Coordinate out of bounds: {coord}.")
 
     def fire(self, location: tuple) -> str:
